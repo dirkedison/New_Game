@@ -19,7 +19,7 @@ with col1:
         level_up('mining')
     st.write(f"Current level: {st.session_state.mining}")
     
-    if st.session_state.mining < 10:
+    if st.session_state.mining < 5:
         st.write("You can mine copper ore.")
     else:
         st.write("You can mine copper ore.")
@@ -32,7 +32,7 @@ with col2:
         level_up('woodcutting')
     st.write(f"Current level: {st.session_state.woodcutting}")
     
-    if st.session_state.woodcutting < 10:
+    if st.session_state.woodcutting < 5:
         st.write("You can chop normal trees.")
     else:
         st.write("You can chop normal trees.")
