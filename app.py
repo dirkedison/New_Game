@@ -20,7 +20,7 @@ with col1:
     if st.button("Mine", key="mine"):
         level_up('mining')
     
-    if st.session_state.mining < 10:
+    if st.session_state.mining < 9:
         st.write("You can mine copper ore.")
     else:
         st.write("You can mine copper and silver ore.")
@@ -31,7 +31,7 @@ with col2:
     if st.button("Chop", key="chop"):
         level_up('woodcutting')
     
-    if st.session_state.woodcutting < 10:
+    if st.session_state.woodcutting < 9:
         st.write("You can chop normal trees.")
     else:
         st.write("You can chop normal and oak trees.")
