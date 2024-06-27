@@ -9,7 +9,7 @@ if 'woodcutting' not in st.session_state:
 def level_up(skill):
     st.session_state[skill] += 1
 
-st.title("Simple RPG Game")
+st.title("Best RPG Game")
 
 col1, col2 = st.columns(2)
 
