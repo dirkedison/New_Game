@@ -22,7 +22,9 @@ with col1:
     if st.session_state.mining < 10:
         st.write("You can mine copper ore.")
     else:
-        st.write("You can mine copper and silver ore.")
+        st.write("You can mine copper ore.")
+        st.write("AND")
+        st.write("You can mine silver ore.")
 
 with col2:
     st.subheader("Woodcutting")
@@ -33,4 +35,6 @@ with col2:
     if st.session_state.woodcutting < 10:
         st.write("You can chop normal trees.")
     else:
-        st.write("You can chop normal and oak trees.")
+        st.write("You can chop normal trees.")
+        st.write("AND")
+        st.write("You can chop oak trees.")
