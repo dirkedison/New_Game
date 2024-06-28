@@ -55,7 +55,7 @@ def convert_currency():
 
 # Currency display at the top
 st.markdown("### Currency")
-currency_display = f"🥇 {st.session_state.state['gold_coins']} | 🥈 {st.session_state.state['silver_coins']} | 🥉 {st.session_state.state['copper_coins']}"
+currency_display = f"🟤 {st.session_state.state['copper_coins']} | ⚪ {st.session_state.state['silver_coins']} | 🟡 {st.session_state.state['gold_coins']}"
 st.markdown(currency_display)
 
 st.title("Simple RPG Game")
