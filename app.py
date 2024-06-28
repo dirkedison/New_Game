@@ -1,4 +1,5 @@
 import streamlit as st
+from PIL import Image
 
 # Initialize session state
 if 'state' not in st.session_state:
@@ -10,7 +11,8 @@ if 'state' not in st.session_state:
         'copper_coins': 0,
         'silver_coins': 0,
         'gold_coins': 0,
-        'show_blacksmith_unlock': False
+        'show_blacksmith_unlock': False,
+        'residence': None
     }
 
 prices = {
@@ -52,6 +54,14 @@ def convert_currency():
     while st.session_state.state['silver_coins'] >= 100:
         st.session_state.state['silver_coins'] -= 100
         st.session_state.state['gold_coins'] += 1
+
+def buy_item(item, cost):
+    if st.session_state.state['copper_coins'] >= cost:
+        st.session_state.state['copper_coins'] -= cost
+        st.session_state.state['residence'] = item
+        convert_currency()
+        return True
+    return False
 
 # Currency display at the top
 st.markdown("### Currency")
@@ -126,3 +136,16 @@ for item, amount in st.session_state.state['inventory'].items():
                 st.success(f"Sold 1 {item.replace('_', ' ')} for {prices[item]} copper coins!")
             else:
                 st.error(f"No {item.replace('_', ' ')} to sell!")
+
+st.subheader("Store")
+if st.button("Buy Old Tent (40 copper)", disabled=st.session_state.state['copper_coins'] < 40):
+    if buy_item("old_tent", 40):
+        st.success("You bought an old tent!")
+    else:
+        st.error("Not enough copper coins!")
+
+if st.session_state.state['residence']:
+    st.subheader("Current Residence")
+    if st.session_state.state['residence'] == "old_tent":
+        tent_image = Image.open("path_to_your_tent_image.jpg")  # Replace with the actual path to your image
+        st.image(tent_image, caption="Your Old Tent", use_column_width=True)
