@@ -147,5 +147,5 @@ if st.button("Buy Old Tent (40 copper)", disabled=st.session_state.state['copper
 if st.session_state.state['residence']:
     st.subheader("Current Residence")
     if st.session_state.state['residence'] == "old_tent":
-        tent_image = Image.open("path_to_your_tent_image.jpg")  # Replace with the actual path to your image
+        tent_image = Image.open("old-tent.jpg")  # Replace with the actual path to your image
         st.image(tent_image, caption="Your Old Tent", use_column_width=True)
