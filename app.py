@@ -3,12 +3,22 @@ import streamlit as st
 # Initialize session state
 if 'state' not in st.session_state:
     st.session_state.state = {
-        'mining': 1,
-        'woodcutting': 1,
-        'blacksmithing': 1,
+        'mining': 0,
+        'woodcutting': 0,
+        'blacksmithing': 0,
         'inventory': {'copper': 0, 'silver': 0, 'wood': 0, 'oak_wood': 0, 'copper_sword': 0, 'silver_sword': 0},
+        'gold_coins': 0,
         'show_blacksmith_unlock': False
     }
+
+prices = {
+    'copper': 1,
+    'silver': 2,
+    'wood': 1,
+    'oak_wood': 2,
+    'copper_sword': 4,
+    'silver_sword': 6
+}
 
 def level_up_and_gather(skill, item):
     st.session_state.state[skill] += 1
@@ -24,6 +34,13 @@ def craft_item(item, resource):
         return True
     return False
 
+def sell_item(item):
+    if st.session_state.state['inventory'][item] > 0:
+        st.session_state.state['inventory'][item] -= 1
+        st.session_state.state['gold_coins'] += prices[item]
+        return True
+    return False
+
 st.title("Simple RPG Game")
 
 col1, col2 = st.columns(2)
@@ -35,7 +52,7 @@ with col1:
     if st.button("Mine Copper", key="mine_copper"):
         level_up_and_gather('mining', 'copper')
     
-    if st.session_state.state['mining'] > 9:
+    if st.session_state.state['mining'] >= 10:
         if st.button("Mine Silver", key="mine_silver"):
             level_up_and_gather('mining', 'silver')
     
@@ -51,7 +68,7 @@ with col2:
     if st.button("Chop Normal Trees", key="chop_normal"):
         level_up_and_gather('woodcutting', 'wood')
     
-    if st.session_state.state['woodcutting'] > 9:
+    if st.session_state.state['woodcutting'] >= 10:
         if st.button("Chop Oak Trees", key="chop_oak"):
             level_up_and_gather('woodcutting', 'oak_wood')
     
@@ -74,7 +91,7 @@ if st.session_state.state['mining'] >= 10:
         else:
             st.error("Not enough copper!")
     
-    if st.session_state.state['blacksmithing'] > 9:
+    if st.session_state.state['blacksmithing'] >= 10:
         if st.button("Make Silver Sword", key="make_silver_sword", disabled=st.session_state.state['inventory']['silver'] == 0):
             if craft_item('silver_sword', 'silver'):
                 st.success("Crafted a Silver Sword!")
@@ -83,4 +100,15 @@ if st.session_state.state['mining'] >= 10:
 
 st.subheader("Inventory")
 for item, amount in st.session_state.state['inventory'].items():
-    st.write(f"{item.capitalize().replace('_', ' ')}: {amount}")
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.write(f"{item.capitalize().replace('_', ' ')}: {amount}")
+    with col2:
+        if st.button(f"Sell (+ {prices[item]} gold)", key=f"sell_{item}", disabled=amount == 0):
+            if sell_item(item):
+                st.success(f"Sold 1 {item.replace('_', ' ')} for {prices[item]} gold coins!")
+            else:
+                st.error(f"No {item.replace('_', ' ')} to sell!")
+
+st.subheader("Gold Coins")
+st.write(f"You have {st.session_state.state['gold_coins']} gold coins.")
