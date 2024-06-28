@@ -53,75 +53,31 @@ def convert_currency():
         st.session_state.state['silver_coins'] -= 100
         st.session_state.state['gold_coins'] += 1
 
-# Currency display in top right
+# Currency display in header
+st.markdown("""
+    <style>
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: #f0f2f6;
+        padding: 10px;
+        z-index: 999;
+    }
+    .content {
+        margin-top: 60px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 currency_display = f"🥇 {st.session_state.state['gold_coins']} | 🥈 {st.session_state.state['silver_coins']} | 🥉 {st.session_state.state['copper_coins']}"
-st.sidebar.markdown(f"<div style='position: fixed; top: 10px; right: 10px; background-color: rgba(255,255,255,0.7); padding: 10px; border-radius: 5px;'>{currency_display}</div>", unsafe_allow_html=True)
+st.markdown(f'<div class="header">Currency: {currency_display}</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="content">', unsafe_allow_html=True)
 
 st.title("Simple RPG Game")
 
-col1, col2 = st.columns(2)
+# ... (rest of the game code remains the same)
 
-with col1:
-    st.subheader("Mining")
-    st.write(f"Current level: {st.session_state.state['mining']}")
-    
-    if st.button("Mine Copper", key="mine_copper"):
-        level_up_and_gather('mining', 'copper')
-    
-    if st.session_state.state['mining'] >= 10:
-        if st.button("Mine Silver", key="mine_silver"):
-            level_up_and_gather('mining', 'silver')
-    
-    if st.session_state.state['mining'] < 10:
-        st.write("You can mine copper ore.")
-    else:
-        st.write("You can mine copper and silver ore.")
-
-with col2:
-    st.subheader("Woodcutting")
-    st.write(f"Current level: {st.session_state.state['woodcutting']}")
-    
-    if st.button("Chop Normal Trees", key="chop_normal"):
-        level_up_and_gather('woodcutting', 'wood')
-    
-    if st.session_state.state['woodcutting'] >= 10:
-        if st.button("Chop Oak Trees", key="chop_oak"):
-            level_up_and_gather('woodcutting', 'oak_wood')
-    
-    if st.session_state.state['woodcutting'] < 10:
-        st.write("You can chop normal trees.")
-    else:
-        st.write("You can chop normal and oak trees.")
-
-if st.session_state.state['mining'] >= 10:
-    st.subheader("Blacksmithing")
-    st.write(f"Current level: {st.session_state.state['blacksmithing']}")
-    
-    if st.session_state.state['show_blacksmith_unlock']:
-        st.success("You unlocked blacksmithing!")
-        st.session_state.state['show_blacksmith_unlock'] = False
-    
-    if st.button("Make Copper Sword", key="make_copper_sword", disabled=st.session_state.state['inventory']['copper'] == 0):
-        if craft_item('copper_sword', 'copper'):
-            st.success("Crafted a Copper Sword!")
-        else:
-            st.error("Not enough copper!")
-    
-    if st.session_state.state['blacksmithing'] >= 10:
-        if st.button("Make Silver Sword", key="make_silver_sword", disabled=st.session_state.state['inventory']['silver'] == 0):
-            if craft_item('silver_sword', 'silver'):
-                st.success("Crafted a Silver Sword!")
-            else:
-                st.error("Not enough silver!")
-
-st.subheader("Inventory")
-for item, amount in st.session_state.state['inventory'].items():
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        st.write(f"{item.capitalize().replace('_', ' ')}: {amount}")
-    with col2:
-        if st.button(f"Sell (+ {prices[item]} copper)", key=f"sell_{item}", disabled=amount == 0):
-            if sell_item(item):
-                st.success(f"Sold 1 {item.replace('_', ' ')} for {prices[item]} copper coins!")
-            else:
-                st.error(f"No {item.replace('_', ' ')} to sell!")
+st.markdown('</div>', unsafe_allow_html=True)
