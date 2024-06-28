@@ -7,6 +7,8 @@ if 'state' not in st.session_state:
         'woodcutting': 0,
         'blacksmithing': 0,
         'inventory': {'copper': 0, 'silver': 0, 'wood': 0, 'oak_wood': 0, 'copper_sword': 0, 'silver_sword': 0},
+        'copper_coins': 0,
+        'silver_coins': 0,
         'gold_coins': 0,
         'show_blacksmith_unlock': False
     }
@@ -37,9 +39,23 @@ def craft_item(item, resource):
 def sell_item(item):
     if st.session_state.state['inventory'][item] > 0:
         st.session_state.state['inventory'][item] -= 1
-        st.session_state.state['gold_coins'] += prices[item]
+        st.session_state.state['copper_coins'] += prices[item]
+        convert_currency()
         return True
     return False
+
+def convert_currency():
+    while st.session_state.state['copper_coins'] >= 100:
+        st.session_state.state['copper_coins'] -= 100
+        st.session_state.state['silver_coins'] += 1
+    
+    while st.session_state.state['silver_coins'] >= 100:
+        st.session_state.state['silver_coins'] -= 100
+        st.session_state.state['gold_coins'] += 1
+
+# Currency display in top right
+currency_display = f"🥇 {st.session_state.state['gold_coins']} | 🥈 {st.session_state.state['silver_coins']} | 🥉 {st.session_state.state['copper_coins']}"
+st.sidebar.markdown(f"<div style='position: fixed; top: 10px; right: 10px; background-color: rgba(255,255,255,0.7); padding: 10px; border-radius: 5px;'>{currency_display}</div>", unsafe_allow_html=True)
 
 st.title("Simple RPG Game")
 
@@ -104,11 +120,8 @@ for item, amount in st.session_state.state['inventory'].items():
     with col1:
         st.write(f"{item.capitalize().replace('_', ' ')}: {amount}")
     with col2:
-        if st.button(f"Sell (+ {prices[item]} gold)", key=f"sell_{item}", disabled=amount == 0):
+        if st.button(f"Sell (+ {prices[item]} copper)", key=f"sell_{item}", disabled=amount == 0):
             if sell_item(item):
-                st.success(f"Sold 1 {item.replace('_', ' ')} for {prices[item]} gold coins!")
+                st.success(f"Sold 1 {item.replace('_', ' ')} for {prices[item]} copper coins!")
             else:
                 st.error(f"No {item.replace('_', ' ')} to sell!")
-
-st.subheader("Gold Coins")
-st.write(f"You have {st.session_state.state['gold_coins']} gold coins.")
